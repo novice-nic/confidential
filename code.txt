@@ -1,0 +1,53 @@
+if (isset($_POST['name']) && $_POST['name'] != '') {
+   $name = htmlspecialchars($_POST['name']); 
+   } else { 
+    $errors[] = 'Please enter Judge Name.';
+  } 
+if (isset($_POST['dob']) && $_POST['dob'] != '') { 
+  $dob = htmlspecialchars($_POST['dob']);
+  } else { 
+    $errors[] = 'Please enter date of birth.';
+} 
+
+if ($dob && $dob != NULL) { 
+  $dob = date('Y-m-d', strtotime($dob));
+} 
+
+<div class="col-md-3">
+<label for="validationCustom02" class="form-label">
+Date of Birth
+<span class="text-danger">*</span>
+</label>
+<input type="text" class="form-control" id="dob" value="" required name="dob" max="<?php echo date('Y-m-d'); ?>" placeholder="Select Date">
+<div class="valid-feedback">
+Looks good!
+</div> 
+</div> <!--end::Col--> <!--begin::Col-->
+
+Script
+
+$("#dob").datepicker({
+   dateFormat: 'dd-mm-yy', 
+   // Set format to dd-mm-yyyy 
+   maxDate: 0, 
+   // Disable future dates (today or earlier) 
+   changeMonth: true, 
+   changeYear: true 
+}); 
+
+CREATE TABLE file_document ( 
+  id serial NOT NULL, 
+  file_id integer NOT NULL, 
+  doc_type_id integer NOT NULL, 
+  rule_name varchar(200) NOT NULL, 
+  rule_date date NOT NULL, 
+  rule_pdf varchar(100) NOT NULL, 
+  remarks varchar(1000) NOT NULL, 
+  is_deleted boolean NOT NULL default FALSE, 
+  created_at timestamp without time zone NOT NULL, 
+  modified_at timestamp without time zone NULL, 
+  deleted_at timestamp without time zone NULL, 
+  CONSTRAINT PK_file_rule PRIMARY KEY (id) );
+
+table name - file_document 
+
