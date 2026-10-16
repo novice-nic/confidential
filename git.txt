@@ -1,0 +1,112 @@
+ubuntu@ubuntu-HP-ProDesk-400-G7-Small-Form-Factor-PC:/var/www/html/confidential$ git init
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint: 
+hint: 	git config --global init.defaultBranch <name>
+hint: 
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint: 
+hint: 	git branch -m <name>
+Initialized empty Git repository in /var/www/html/confidential/.git/
+ubuntu@ubuntu-HP-ProDesk-400-G7-Small-Form-Factor-PC:/var/www/html/confidential$ git remote add origin git@github.com:novice-nic/confidential.git
+ubuntu@ubuntu-HP-ProDesk-400-G7-Small-Form-Factor-PC:/var/www/html/confidential$ git add .
+ubuntu@ubuntu-HP-ProDesk-400-G7-Small-Form-Factor-PC:/var/www/html/confidential$ git commit -m "Initial Commit"
+[master (root-commit) 985623c] Initial Commit
+ 83 files changed, 13056 insertions(+)
+ create mode 100644 Previous_Files/login copy.php
+ create mode 100644 Previous_Files/main_withComments.js
+ create mode 100644 Previous_Files/style copy.css
+ create mode 100644 admin/add_rules.php
+ create mode 100644 admin/dashboard.php
+ create mode 100644 admin/data_access/add_rules_insert.php
+ create mode 100644 admin/data_access/document_delete.php
+ create mode 100644 admin/data_access/fetch_docTypes.php
+ create mode 100644 admin/data_access/fetch_documents.php
+ create mode 100644 admin/data_access/fetch_files.php
+ create mode 100644 admin/data_access/file_master_delete.php
+ create mode 100644 admin/data_access/file_master_insert.php
+ create mode 100644 admin/data_access/login_auth.php
+ create mode 100644 admin/data_access/logout.php
+ create mode 100644 admin/file_master.php
+ create mode 100644 admin/rpt_documents.php
+ create mode 100644 admin/rpt_files.php
+ create mode 100644 admin/serve_document.php
+ create mode 100644 assets/css/bootstrap.min.css
+ create mode 100644 assets/css/style.css
+ create mode 100644 assets/database_dump/fileManagementdb.sql
+ create mode 100644 assets/images/ss/Screenshot 2026-10-05 at 14-55-00 Add Rules.png
+ create mode 100644 assets/images/ss/Screenshot 2026-10-05 at 14-55-10 File Master.png
+ create mode 100644 assets/images/ss/Screenshot 2026-10-05 at 14-55-17 Dashboard.png
+ create mode 100644 assets/images/ss/Screenshot 2026-10-05 at 14-55-30 Login.png
+ create mode 100644 assets/images/ss/Screenshot 2026-10-05 at 16-38-55 Add Rules.png
+ create mode 100644 assets/images/ss/plus.png
+ create mode 100644 assets/images/ss/template.png
+ create mode 100644 assets/images/svg/404.svg
+ create mode 100644 assets/images/svg/maintenance.svg
+ create mode 100644 assets/js/add_rules_insert.js
+ create mode 100644 assets/js/bootstrap.bundle.min.js
+ create mode 100644 assets/js/document_report_delete.js
+ create mode 100644 assets/js/file_master_insert.js
+ create mode 100644 assets/js/file_report_delete.js
+ create mode 100644 assets/js/main.js
+ create mode 100644 assets/js/rpt_documents_Filter_Form.js
+ create mode 100644 assets/js/sweetalert2.js
+ create mode 100644 assets/sql/query.sql
+ create mode 100644 assets/vendors/bootstrap-icons/bootstrap-icons.css
+ create mode 100644 assets/vendors/bootstrap-icons/fonts/bootstrap-icons.woff
+ create mode 100644 assets/vendors/bootstrap-icons/fonts/bootstrap-icons.woff2
+ create mode 100644 assets/vendors/datatables/datatables.min.css
+ create mode 100644 assets/vendors/datatables/datatables.min.js
+ create mode 100644 assets/vendors/datatables/jszip.min.js
+ create mode 100644 assets/vendors/datatables/pdfmake.min.js
+ create mode 100644 assets/vendors/datatables/vfs_fonts.js
+ create mode 100644 assets/vendors/flatpickr/flatpickr.darkTheme.css
+ create mode 100644 assets/vendors/flatpickr/flatpickr.min.css
+ create mode 100644 assets/vendors/flatpickr/flatpickr.min.js
+ create mode 100644 assets/vendors/jQuery/jquery.min.js
+ create mode 100644 code.txt
+ create mode 100644 html/404.html
+ create mode 100644 html/500.html
+ create mode 100644 html/add-user.html
+ create mode 100644 html/alerts.html
+ create mode 100644 html/blank.html
+ create mode 100644 html/charts.html
+ create mode 100644 html/components.html
+ create mode 100644 html/create-agent.html
+ create mode 100644 html/forgot-password.html
+ create mode 100644 html/forms.html
+ create mode 100644 html/modals.html
+ create mode 100644 html/profile.html
+ create mode 100644 html/register.html
+ create mode 100644 html/settings.html
+ create mode 100644 html/tables.html
+ create mode 100644 html/user-details.html
+ create mode 100644 html/users.html
+ create mode 100644 include/conn.php
+ create mode 100644 include/footer.php
+ create mode 100644 include/navbar.php
+ create mode 100644 include/sidebar.php
+ create mode 100644 index.php
+ create mode 100644 login.php
+ create mode 100644 uploads/.htaccess
+ create mode 100644 uploads/documents/act_00003.pdf
+ create mode 100644 uploads/documents/act_00005.pdf
+ create mode 100644 uploads/documents/circular_00004.pdf
+ create mode 100644 uploads/documents/memo_00007.pdf
+ create mode 100644 uploads/documents/notesheet_00001.pdf
+ create mode 100644 uploads/documents/procedure_00002.pdf
+ create mode 100644 uploads/documents/procedure_00006.pdf
+ubuntu@ubuntu-HP-ProDesk-400-G7-Small-Form-Factor-PC:/var/www/html/confidential$ git branch -M main
+ubuntu@ubuntu-HP-ProDesk-400-G7-Small-Form-Factor-PC:/var/www/html/confidential$ git push -u origin main
+Enumerating objects: 102, done.
+Counting objects: 100% (102/102), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (98/98), done.
+Writing objects: 100% (102/102), 5.05 MiB | 2.58 MiB/s, done.
+Total 102 (delta 22), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (22/22), done.
+To github.com:novice-nic/confidential.git
+ * [new branch]      main -> main
+ubuntu@ubuntu-HP-ProDesk-400-G7-Small-Form-Factor-PC:/var/www/html/confidential$ 
