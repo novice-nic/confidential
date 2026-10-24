@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             const data = await response.json();
 
-            Swal.fire({
+            await Swal.fire({
                 theme: "auto",
                 icon: data.status === "Success" ? "success" : "error",
                 title: data.status,
@@ -27,9 +27,15 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             if (data.status === "Success") {
-                form.reset();
-                document.getElementById("formDate")._flatpickr.clear();
-                form.classList.remove("was-validated");
+                if (data.mode === "update") {
+                    // Edit mode: go back to the report
+                    window.location.href = "rpt_documents.php";
+                } else {
+                    // New document: clear the form
+                    form.reset();
+                    document.getElementById("formDate")._flatpickr.clear();
+                    form.classList.remove("was-validated");
+                }
             }
         } catch (error) {
             Swal.fire({

@@ -6,10 +6,39 @@ if (!isset($_SESSION['user_id']) || (int)$_SESSION['role'] !== 1) {
     header('Location: ../login.php');
     exit();
 }
+require_once __DIR__ . '/../include/conn.php';
 include_once 'data_access/fetch_files.php';
 include_once 'data_access/fetch_docTypes.php';
 /** @var array $fetchFiles */
 /** @var array $fetchDocTypes */
+
+// Edit mode: the Edit button in the report sends the document id with POST
+$editId = (int)($_POST['id'] ?? 0);
+$record = null;
+
+if ($editId > 0) {
+    $stmt = $conn->prepare(
+        "SELECT id, file_id, doc_type_id, rule_name, doc_date, remarks, rule_pdf
+         FROM public.file_document
+         WHERE id = :id AND is_deleted = FALSE"
+    );
+    $stmt->execute([':id' => $editId]);
+    $record = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Wrong or deleted id: go back to the report
+    if (!$record) {
+        header('Location: rpt_documents.php');
+        exit();
+    }
+}
+
+$isEdit = $record !== null;
+
+// Safe text for the form fields
+function val(?array $r, string $k): string
+{
+    return htmlspecialchars((string)($r[$k] ?? ''), ENT_QUOTES, 'UTF-8');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,7 +74,7 @@ include_once 'data_access/fetch_docTypes.php';
                             </span>
                             <div>
                                 <!-- <p class="eyebrow mb-1">Inputs</p> -->
-                                <h1 class="h3 mb-1">Add Documents</h1>
+                                <h1 class="h3 mb-1"><?= $isEdit ? 'Edit Document' : 'Add Documents' ?></h1>
                                 <!-- <p class="text-muted mb-0">Reusable form controls, validation states, and field layouts.</p> -->
                             </div>
                         </div>
@@ -54,6 +83,7 @@ include_once 'data_access/fetch_docTypes.php';
                     <section class="row g-3 justify-content-center">
                         <div class="col-12">
                             <form class="panel needs-validation form-add" id="addRulesForm" method="post" enctype="multipart/form-data" novalidate>
+                                <input type="hidden" name="id" value="<?= $isEdit ? (int)$record['id'] : 0 ?>">
                                 <div class="panel-header">
                                     <div>
                                         <!-- <h2 class="h5 mb-1 section-title">
@@ -71,10 +101,13 @@ include_once 'data_access/fetch_docTypes.php';
                                     <div class="col-md-6">
                                         <label for="chooseFile" class="form-label">File</label>
                                         <span class="text-danger">*</span>
-                                        <select name="file_id" class="form-select" id="chooseFile" required>
-                                            <option selected disabled value="">--Choose a file--</option>
+                                        <select name="file_id" class="form-select" id="chooseFile" <?= $isEdit ? 'disabled' : 'required' ?>>
+                                            <option <?= $isEdit ? '' : 'selected' ?> disabled value="">--Choose a file--</option>
                                             <?php foreach ($fetchFiles as $files) { ?>
-                                                <option value="<?php echo $files['id']; ?>"><?php echo $files['file_number'] . " - "  . $files['subject'] ?></option>
+                                                <option value="<?php echo $files['id']; ?>"
+                                                    <?= $isEdit && (int)$record['file_id'] === (int)$files['id'] ? 'selected' : '' ?>>
+                                                    <?php echo $files['file_number'] . " - "  . $files['subject'] ?>
+                                                </option>
                                             <?php } ?>
                                         </select>
                                         <div class="invalid-feedback">File is required.</div>
@@ -84,9 +117,12 @@ include_once 'data_access/fetch_docTypes.php';
                                         <label for="fileType" class="form-label">Document Type</label>
                                         <span class="text-danger">*</span>
                                         <select name="doc_type_id" id="fileType" class="form-select" required>
-                                            <option selected disabled value="">--Choose a Type--</option>
+                                            <option <?= $isEdit ? '' : 'selected' ?> disabled value="">--Choose a Type--</option>
                                             <?php foreach ($fetchDocTypes as $docs) { ?>
-                                                <option value="<?php echo $docs['id']; ?>"><?php echo $docs['name']; ?></option>
+                                                <option value="<?php echo $docs['id']; ?>"
+                                                    <?= $isEdit && (int)$record['doc_type_id'] === (int)$docs['id'] ? 'selected' : '' ?>>
+                                                    <?php echo $docs['name']; ?>
+                                                </option>
                                             <?php } ?>
                                         </select>
                                         <div class="invalid-feedback">Document Type is required.</div>
@@ -95,23 +131,33 @@ include_once 'data_access/fetch_docTypes.php';
                                     <div class="col-md-6">
                                         <label class="form-label" for="formName">Document Name</label>
                                         <span class="text-danger">*</span>
-                                        <input class="form-control" name="rule_name" maxlength="200" id="formName" type="text" required>
+                                        <input class="form-control" name="rule_name" maxlength="200" id="formName" type="text"
+                                            value="<?= val($record, 'rule_name') ?>" required>
                                         <div class="invalid-feedback">Document Name is required.</div>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label" for="formDate">Document Date</label>
                                         <span class="text-danger">*</span>
-                                        <input class="form-control" id="formDate" type="text" name="doc_date" placeholder="Select date" required>
+                                        <input class="form-control" id="formDate" type="text" name="doc_date" placeholder="Select date"
+                                            value="<?= val($record, 'doc_date') ?>" required>
                                         <div class="invalid-feedback">Document date is required.</div>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label for="file" class="form-label">Pdf Upload</label>
-                                        <span class="text-danger">*</span>
-                                        <input name="rule_pdf" type="file" id="file" class="form-control" required>
+                                        <?php if (!$isEdit) { ?><span class="text-danger">*</span><?php } ?>
+                                        <input name="rule_pdf" type="file" id="file" class="form-control" accept=".pdf,application/pdf"
+                                            <?= $isEdit ? '' : 'required' ?>>
                                         <div class="invalid-feedback">Select a pdf.</div>
 
+                                        <?php if ($isEdit && !empty($record['rule_pdf'])) { ?>
+                                            <div class="form-text">
+                                                Current file: <strong><?= htmlspecialchars(basename($record['rule_pdf']), ENT_QUOTES, 'UTF-8') ?></strong>
+                                                <a href="serve_document.php?id=<?= (int)$record['id'] ?>" target="_blank" rel="noopener noreferrer">View PDF</a>
+                                                <br>Leave empty to keep the current file.
+                                            </div>
+                                        <?php } ?>
                                     </div>
                                     <!-- <div class="col-md-6"><label class="form-label" for="formPlan">Plan</label><select class="form-select" id="formPlan" required>
                                             <option value="">Choose plan</option>
@@ -127,12 +173,12 @@ include_once 'data_access/fetch_docTypes.php';
                                     <div class="col-12">
                                         <label class="form-label" for="formRemarks">Remarks</label>
                                         <span class="text-danger">*</span>
-                                        <textarea class="form-control" name="remarks" maxlength="500" id="formRemarks" rows="4" required></textarea>
+                                        <textarea class="form-control" name="remarks" maxlength="500" id="formRemarks" rows="4" required><?= val($record, 'remarks') ?></textarea>
                                         <div class="invalid-feedback">Remarks is required.</div>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-end mt-4">
-                                    <button class="btn btn-primary" type="submit">Submit Form</button>
+                                    <button class="btn btn-primary" type="submit"><?= $isEdit ? 'Update' : 'Submit Form' ?></button>
                                 </div>
                             </form>
                         </div>
@@ -154,7 +200,7 @@ include_once 'data_access/fetch_docTypes.php';
     <script src="../assets/js/main.js"></script>
     <script src="../assets/vendors/flatpickr/flatpickr.min.js"></script>
     <script src="../assets/js/sweetalert2.js"></script>
-    <script src="../assets/js/add_rules_insert.js"></script>
+    <script src="../assets/js/add_rules_insert.js?v=2"></script>
     <script>
         flatpickr("#formDate", {
             altInput: true, // shows a friendly date to the user
