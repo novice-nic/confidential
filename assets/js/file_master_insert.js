@@ -1,9 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("fileMasterForm");
-    // Allowed Characters Validation 
-    document.getElementById("formNumber").addEventListener("input", function () {
-        this.value = this.value.replace(/[^A-Za-z0-9\/-]/g, "");
-    });
+
+    // // Allowed Characters Validation 
+    // const allowedChars = /[^A-Za-z0-9\/-]/g;
+
+    // // Apply to all fields with the "no-special-chars" class
+    // document.addEventListener("input", function (e) {
+    //     if (e.target.classList.contains("no-special-chars")) {
+    //         e.target.value = e.target.value.replace(allowedChars, "");
+    //     }
+    // });
 
     form.addEventListener("submit", async function (e) {
         e.preventDefault();

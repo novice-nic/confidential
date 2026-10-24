@@ -131,7 +131,7 @@ function val(?array $r, string $k): string
                                     <div class="col-md-6">
                                         <label class="form-label" for="formName">Document Name</label>
                                         <span class="text-danger">*</span>
-                                        <input class="form-control" name="rule_name" maxlength="200" id="formName" type="text"
+                                        <input class="form-control allow-alphanumeric" name="rule_name" maxlength="200" id="formName" type="text"
                                             value="<?= val($record, 'rule_name') ?>" required>
                                         <div class="invalid-feedback">Document Name is required.</div>
                                     </div>
@@ -173,7 +173,7 @@ function val(?array $r, string $k): string
                                     <div class="col-12">
                                         <label class="form-label" for="formRemarks">Remarks</label>
                                         <span class="text-danger">*</span>
-                                        <textarea class="form-control" name="remarks" maxlength="500" id="formRemarks" rows="4" required><?= val($record, 'remarks') ?></textarea>
+                                        <textarea class="form-control allow-alphanumeric" name="remarks" maxlength="500" id="formRemarks" rows="4" required><?= val($record, 'remarks') ?></textarea>
                                         <div class="invalid-feedback">Remarks is required.</div>
                                     </div>
                                 </div>
@@ -200,6 +200,7 @@ function val(?array $r, string $k): string
     <script src="../assets/js/main.js"></script>
     <script src="../assets/vendors/flatpickr/flatpickr.min.js"></script>
     <script src="../assets/js/sweetalert2.js"></script>
+    <script src="../assets/js/allowed_characters.js"></script>
     <script src="../assets/js/add_rules_insert.js?v=2"></script>
     <script>
         flatpickr("#formDate", {

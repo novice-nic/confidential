@@ -99,7 +99,7 @@ function val(?array $r, string $k): string
                                     <div class="col-md-6">
                                         <label class="form-label" for="formNumber">File Number</label>
                                         <span class="text-danger">*</span>
-                                        <input class="form-control" maxlength="15" id="formNumber"
+                                        <input class="form-control allow-slash-hyphen" maxlength="15" id="formNumber"
                                             name="fileNumber" value="<?= val($record, 'file_number') ?>" pattern="[A-Za-z0-9\/\-]+" required>
                                         <div class="invalid-feedback">
                                             File number is required. Only letters, numbers, - and / are allowed.
@@ -109,7 +109,7 @@ function val(?array $r, string $k): string
                                     <div class="col-md-6">
                                         <label class="form-label" for="subject">Subject</label>
                                         <span class="text-danger">*</span>
-                                        <input class="form-control" maxlength="200" id="subject"
+                                        <input class="form-control allow-alphanumeric" maxlength="200" id="subject"
                                             name="subject" value="<?= val($record, 'subject') ?>" type="text" required>
                                         <div class="invalid-feedback">Subject is required.</div>
                                         <div class="valid-feedback">Looks good!</div>
@@ -130,7 +130,7 @@ function val(?array $r, string $k): string
                                     <div class="col-md-12">
                                         <label class="form-label" for="remark">Remarks</label>
                                         <span class="text-danger">*</span>
-                                        <textarea class="form-control" maxlength="500" id="remark" name="remark" rows="4" required><?= val($record, 'remarks') ?></textarea>
+                                        <textarea class="form-control allow-alphanumeric" maxlength="500" id="remark" name="remark" rows="4" required><?= val($record, 'remarks') ?></textarea>
                                         <div class="invalid-feedback">Remarks is required.</div>
                                         <div class="valid-feedback">Looks good!</div>
                                     </div>
@@ -163,6 +163,7 @@ function val(?array $r, string $k): string
     <script src="../assets/js/sweetalert2.js"></script>
     <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/allowed_characters.js"></script>
     <script src="../assets/js/file_master_insert.js"></script>
 
 </body>
