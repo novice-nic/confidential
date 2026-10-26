@@ -73,6 +73,11 @@
 
             </ul>
         </div>
+
+        <!-- <a class="nav-link <?= $current_page == 'add_faq.php' ? 'active' : '' ?>" href="add_faq.php">
+            <span class="nav-icon"><i class="bi bi-question-circle" aria-hidden="true"></i></span>
+            <span class="nav-text">Add FAQ</span>
+        </a> -->
         <!-- <a class="nav-link" href="#">
             <span class="nav-icon"><i class="bi bi-bar-chart-line" aria-hidden="true"></i></span>
             <span class="nav-text">Charts</span>
