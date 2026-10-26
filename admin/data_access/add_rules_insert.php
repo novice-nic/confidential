@@ -46,7 +46,7 @@ try {
     $ruleName  = trim($_POST['rule_name'] ?? '');
     $docDate   = trim($_POST['doc_date'] ?? '');
     $remarks   = trim($_POST['remarks'] ?? '');
-    $pdf       = $_FILES['rule_pdf'] ?? null;
+    $pdf       = $_FILES['doc_pdf'] ?? null;
     $hasNewPdf = $pdf && $pdf['error'] !== UPLOAD_ERR_NO_FILE;
 
     // Required checks (the file is not sent in edit mode: it cannot be changed)
@@ -85,7 +85,7 @@ try {
     $oldDbPath = '';
     if ($isEdit) {
         $stmt = $conn->prepare(
-            "SELECT rule_pdf FROM file_document WHERE id = :id AND is_deleted = FALSE"
+            "SELECT doc_pdf FROM file_document WHERE id = :id AND is_deleted = FALSE"
         );
         $stmt->execute([':id' => $id]);
         $oldDbPath = $stmt->fetchColumn();
@@ -124,7 +124,7 @@ try {
     if (!$isEdit) {
         // ---------- INSERT ----------
         $stmt = $conn->prepare(
-            "INSERT INTO file_document (file_id, doc_type_id, rule_name, doc_date, rule_pdf, remarks, created_at)
+            "INSERT INTO file_document (file_id, doc_type_id, rule_name, doc_date, doc_pdf, remarks, created_at)
              VALUES (:file_id, :doc_type_id, :rule_name, :doc_date, '', :remarks, :created_at)
              RETURNING id"
         );
@@ -146,7 +146,7 @@ try {
             throw new Exception("Could not save the PDF file.");
         }
 
-        $stmt = $conn->prepare("UPDATE file_document SET rule_pdf = :pdf WHERE id = :id");
+        $stmt = $conn->prepare("UPDATE file_document SET doc_pdf = :pdf WHERE id = :id");
         $stmt->execute([':pdf' => $dbPath, ':id' => $newId]);
 
         $conn->commit();
@@ -200,7 +200,7 @@ try {
             $tempPath = null;
 
             // 4. Save the new path in the database
-            $stmt = $conn->prepare("UPDATE file_document SET rule_pdf = :pdf WHERE id = :id");
+            $stmt = $conn->prepare("UPDATE file_document SET doc_pdf = :pdf WHERE id = :id");
             $stmt->execute([':pdf' => $dbPath, ':id' => $id]);
         }
 

@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 WHERE user_name = :username
                   AND password = :password
                   AND role = 1
-                  AND status = 'active'";
+                  AND status = 1";
 
         $stmt = $conn->prepare($sql);
 

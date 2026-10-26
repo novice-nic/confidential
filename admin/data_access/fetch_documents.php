@@ -51,7 +51,7 @@ $sql = "
     SELECT
         fd.id, fd.file_id, fm.file_number, fm.subject AS file_subject,
         fd.doc_type_id, dt.name AS doc_type_name,
-        fd.rule_name, fd.doc_date, fd.remarks, fd.rule_pdf
+        fd.rule_name, fd.doc_date, fd.remarks, fd.doc_pdf
     FROM public.file_document AS fd
     INNER JOIN public.file_master AS fm ON fd.file_id = fm.id
     INNER JOIN public.doc_type AS dt ON fd.doc_type_id = dt.id

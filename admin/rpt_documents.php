@@ -204,7 +204,7 @@ include_once 'data_access/fetch_documents.php';
 
                                                     <!-- View Document -->
                                                     <td>
-                                                        <?php if (!empty($row['rule_pdf'])) { ?>
+                                                        <?php if (!empty($row['doc_pdf'])) { ?>
                                                             <a
                                                                 href="serve_document.php?id=<?php echo (int)$row['id']; ?>"
                                                                 target="_blank"

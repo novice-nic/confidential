@@ -18,7 +18,7 @@ $record = null;
 
 if ($editId > 0) {
     $stmt = $conn->prepare(
-        "SELECT id, file_id, doc_type_id, rule_name, doc_date, remarks, rule_pdf
+        "SELECT id, file_id, doc_type_id, rule_name, doc_date, remarks, doc_pdf
          FROM public.file_document
          WHERE id = :id AND is_deleted = FALSE"
     );
@@ -147,13 +147,13 @@ function val(?array $r, string $k): string
                                     <div class="col-md-6">
                                         <label for="file" class="form-label">Pdf Upload</label>
                                         <?php if (!$isEdit) { ?><span class="text-danger">*</span><?php } ?>
-                                        <input name="rule_pdf" type="file" id="file" class="form-control" accept=".pdf,application/pdf"
+                                        <input name="doc_pdf" type="file" id="file" class="form-control" accept=".pdf,application/pdf"
                                             <?= $isEdit ? '' : 'required' ?>>
                                         <div class="invalid-feedback">Select a pdf.</div>
 
-                                        <?php if ($isEdit && !empty($record['rule_pdf'])) { ?>
+                                        <?php if ($isEdit && !empty($record['doc_pdf'])) { ?>
                                             <div class="form-text">
-                                                Current file: <strong><?= htmlspecialchars(basename($record['rule_pdf']), ENT_QUOTES, 'UTF-8') ?></strong>
+                                                Current file: <strong><?= htmlspecialchars(basename($record['doc_pdf']), ENT_QUOTES, 'UTF-8') ?></strong>
                                                 <a href="serve_document.php?id=<?= (int)$record['id'] ?>" target="_blank" rel="noopener noreferrer">View PDF</a>
                                                 <br>Leave empty to keep the current file.
                                             </div>

@@ -10,7 +10,7 @@ require_once __DIR__ . '/../include/conn.php';
 $id = (int)($_GET['id'] ?? 0);
 
 $stmt = $conn->prepare(
-    "SELECT rule_pdf FROM public.file_document
+    "SELECT doc_pdf FROM public.file_document
      WHERE id = :id AND is_deleted = FALSE"
 );
 $stmt->execute([':id' => $id]);
