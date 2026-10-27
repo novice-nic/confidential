@@ -52,12 +52,12 @@ try {
     // Required checks (the file is not sent in edit mode: it cannot be changed)
     if (!$isEdit && $fileId <= 0) throw new Exception("Please choose a file.");
     if ($docTypeId <= 0)  throw new Exception("Please choose a document type.");
-    if ($docName === '') throw new Exception("Rule name is required.");
+    if ($docName === '') throw new Exception("Document name is required.");
     if ($docDate === '')  throw new Exception("Document date is required.");
     if ($remarks === '')  throw new Exception("Remarks is required.");
 
     // Length checks
-    checkMaxLength($docName, 200, "Rule name");
+    checkMaxLength($docName, 200, "Document name");
     checkMaxLength($remarks, 500, "Remarks");
 
     // Date must be a real date in Y-m-d format
