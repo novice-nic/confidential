@@ -141,8 +141,8 @@ function val(?array $r, string $k): string
                                         <div class="valid-feedback">Looks good!</div>
                                     </div> -->
                                 </div>
-                                <div class="d-flex justify-content-end mt-4">
-                                    <button class="btn btn-primary" type="submit"><?= $isEdit ? 'Update' : 'Submit Form' ?></button>
+                                <div class="d-flex justify-content-center mt-4">
+                                    <button class="btn btn-primary" type="submit"><?= $isEdit ? 'Update' : 'Submit' ?></button>
                                 </div>
                             </form>
                         </div>

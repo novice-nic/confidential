@@ -111,8 +111,8 @@ include_once 'data_access/fetch_files.php';
                                     </div>
 
                                 </div>
-                                <div class="d-flex justify-content-end mt-4">
-                                    <button class="btn btn-primary" type="submit">Submit Form</button>
+                                <div class="d-flex justify-content-center mt-4">
+                                    <button class="btn btn-primary" type="submit">Submit</button>
                                 </div>
                             </form>
                         </div>

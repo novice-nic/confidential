@@ -16,7 +16,7 @@ try {
     }
 
     $stmt = $conn->prepare(
-        "SELECT fd.id, dt.name AS doc_type_name, fd.rule_name, fd.doc_date, fd.remarks
+        "SELECT fd.id, dt.name AS doc_type_name, fd.doc_name, fd.doc_date, fd.remarks
          FROM public.file_document AS fd
          INNER JOIN public.doc_type AS dt ON fd.doc_type_id = dt.id
          WHERE fd.file_id = :file_id AND fd.is_deleted = FALSE
@@ -29,7 +29,7 @@ try {
         $rows[] = [
             'id'       => (int)$r['id'],
             'type'     => $r['doc_type_name'] ?? '',
-            'name'     => $r['rule_name'] ?? '',
+            'name'     => $r['doc_name'] ?? '',
             'date_fmt' => !empty($r['doc_date']) ? date('d-m-Y', strtotime($r['doc_date'])) : '',
             'remarks'  => $r['remarks'] ?? '',
         ];
