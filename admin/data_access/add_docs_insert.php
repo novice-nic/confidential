@@ -43,7 +43,7 @@ try {
     $isEdit    = $id > 0;
     $fileId    = (int)($_POST['file_id'] ?? 0);
     $docTypeId = (int)($_POST['doc_type_id'] ?? 0);
-    $ruleName  = trim($_POST['rule_name'] ?? '');
+    $docName  = trim($_POST['doc_name'] ?? '');
     $docDate   = trim($_POST['doc_date'] ?? '');
     $remarks   = trim($_POST['remarks'] ?? '');
     $pdf       = $_FILES['doc_pdf'] ?? null;
@@ -52,12 +52,12 @@ try {
     // Required checks (the file is not sent in edit mode: it cannot be changed)
     if (!$isEdit && $fileId <= 0) throw new Exception("Please choose a file.");
     if ($docTypeId <= 0)  throw new Exception("Please choose a document type.");
-    if ($ruleName === '') throw new Exception("Rule name is required.");
+    if ($docName === '') throw new Exception("Rule name is required.");
     if ($docDate === '')  throw new Exception("Document date is required.");
     if ($remarks === '')  throw new Exception("Remarks is required.");
 
     // Length checks
-    checkMaxLength($ruleName, 200, "Rule name");
+    checkMaxLength($docName, 200, "Rule name");
     checkMaxLength($remarks, 500, "Remarks");
 
     // Date must be a real date in Y-m-d format
@@ -124,14 +124,14 @@ try {
     if (!$isEdit) {
         // ---------- INSERT ----------
         $stmt = $conn->prepare(
-            "INSERT INTO file_document (file_id, doc_type_id, rule_name, doc_date, doc_pdf, remarks, created_at)
-             VALUES (:file_id, :doc_type_id, :rule_name, :doc_date, '', :remarks, :created_at)
+            "INSERT INTO file_document (file_id, doc_type_id, doc_name, doc_date, doc_pdf, remarks, created_at)
+             VALUES (:file_id, :doc_type_id, :doc_name, :doc_date, '', :remarks, :created_at)
              RETURNING id"
         );
         $stmt->execute([
             ':file_id'     => $fileId,
             ':doc_type_id' => $docTypeId,
-            ':rule_name'   => $ruleName,
+            ':doc_name'   => $docName,
             ':doc_date'    => $docDate,
             ':remarks'     => $remarks,
             ':created_at'  => date('Y-m-d H:i:s'),
@@ -155,13 +155,13 @@ try {
         // ---------- UPDATE ----------
         $stmt = $conn->prepare(
             "UPDATE file_document
-             SET doc_type_id = :doc_type_id, rule_name = :rule_name, doc_date = :doc_date,
+             SET doc_type_id = :doc_type_id, doc_name = :doc_name, doc_date = :doc_date,
                  remarks = :remarks, modified_at = :modified_at
              WHERE id = :id AND is_deleted = FALSE"
         );
         $stmt->execute([
             ':doc_type_id' => $docTypeId,
-            ':rule_name'   => $ruleName,
+            ':doc_name'   => $docName,
             ':doc_date'    => $docDate,
             ':remarks'     => $remarks,
             ':modified_at' => date('Y-m-d H:i:s'),

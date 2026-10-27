@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../include/conn.php';
 // Read the filters (all optional)
 $fType    = (int)($_GET['doc_type_id'] ?? 0);
 $fFile    = (int)($_GET['file_id'] ?? 0);
-$fName    = trim($_GET['rule_name'] ?? '');
+$fName    = trim($_GET['doc_name'] ?? '');
 $fRemarks = trim($_GET['remarks'] ?? '');
 $fFrom    = trim($_GET['from_date'] ?? '');
 $fTo      = trim($_GET['to_date'] ?? '');
@@ -31,7 +31,7 @@ if ($fFile > 0) {
     $params[':file'] = $fFile;
 }
 if ($fName !== '') {
-    $where[] = "fd.rule_name ILIKE :name";
+    $where[] = "fd.doc_name ILIKE :name";
     $params[':name'] = '%' . $fName . '%';
 }
 if ($fRemarks !== '') {
@@ -51,7 +51,7 @@ $sql = "
     SELECT
         fd.id, fd.file_id, fm.file_number, fm.subject AS file_subject,
         fd.doc_type_id, dt.name AS doc_type_name,
-        fd.rule_name, fd.doc_date, fd.remarks, fd.doc_pdf
+        fd.doc_name, fd.doc_date, fd.remarks, fd.doc_pdf
     FROM public.file_document AS fd
     INNER JOIN public.file_master AS fm ON fd.file_id = fm.id
     INNER JOIN public.doc_type AS dt ON fd.doc_type_id = dt.id

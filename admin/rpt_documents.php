@@ -175,7 +175,7 @@ include_once 'data_access/fetch_documents.php';
                                                     <td>
                                                         <?php
                                                         echo htmlspecialchars(
-                                                            $row['rule_name'] ?? '',
+                                                            $row['doc_name'] ?? '',
                                                             ENT_QUOTES,
                                                             'UTF-8'
                                                         );
@@ -221,7 +221,7 @@ include_once 'data_access/fetch_documents.php';
                                                     <!-- Action Buttons -->
                                                     <td>
                                                         <div class="d-flex gap-2">
-                                                            <form method="post" action="add_rules.php" class="d-inline">
+                                                            <form method="post" action="add_docs.php" class="d-inline">
                                                                 <input type="hidden" name="id" value="<?php echo (int)$row['id']; ?>">
                                                                 <button type="submit" title="Edit" class="btn btn-sm btn-outline-primary">
                                                                     <i class="bi bi-pencil-square"></i> Edit

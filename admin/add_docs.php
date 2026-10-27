@@ -18,7 +18,7 @@ $record = null;
 
 if ($editId > 0) {
     $stmt = $conn->prepare(
-        "SELECT id, file_id, doc_type_id, rule_name, doc_date, remarks, doc_pdf
+        "SELECT id, file_id, doc_type_id, doc_name, doc_date, remarks, doc_pdf
          FROM public.file_document
          WHERE id = :id AND is_deleted = FALSE"
     );
@@ -131,8 +131,8 @@ function val(?array $r, string $k): string
                                     <div class="col-md-6">
                                         <label class="form-label" for="formName">Document Name</label>
                                         <span class="text-danger">*</span>
-                                        <input class="form-control allow-alphanumeric" name="rule_name" maxlength="200" id="formName" type="text"
-                                            value="<?= val($record, 'rule_name') ?>" required>
+                                        <input class="form-control allow-alphanumeric" name="doc_name" maxlength="200" id="formName" type="text"
+                                            value="<?= val($record, 'doc_name') ?>" required>
                                         <div class="invalid-feedback">Document Name is required.</div>
                                     </div>
 
@@ -201,7 +201,7 @@ function val(?array $r, string $k): string
     <script src="../assets/vendors/flatpickr/flatpickr.min.js"></script>
     <script src="../assets/js/sweetalert2.js"></script>
     <script src="../assets/js/allowed_characters.js"></script>
-    <script src="../assets/js/add_rules_insert.js?v=2"></script>
+    <script src="../assets/js/add_docs_insert.js?v=2"></script>
     <script>
         flatpickr("#formDate", {
             altInput: true, // shows a friendly date to the user

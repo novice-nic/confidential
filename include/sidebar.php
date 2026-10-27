@@ -15,7 +15,7 @@
     $current_page = basename($_SERVER['PHP_SELF']);
 
     // Which pages belong to which group
-    $entryPages  = ['file_master.php', 'add_rules.php'];
+    $entryPages  = ['file_master.php', 'add_docs.php'];
     $reportPages = ['rpt_files.php', 'rpt_documents.php'];
 
     $entryOpen  = in_array($current_page, $entryPages);
@@ -43,7 +43,7 @@
                     </a>
                 </li>
                 <li>
-                    <a class="nav-link sub-link <?= $current_page == 'add_rules.php' ? 'active' : '' ?>" href="add_rules.php">
+                    <a class="nav-link sub-link <?= $current_page == 'add_docs.php' ? 'active' : '' ?>" href="add_docs.php">
                         <span class="nav-text">Add Documents</span>
                     </a>
                 </li>

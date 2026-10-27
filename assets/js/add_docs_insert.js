@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
         submitBtn.disabled = true; // stop double submit
 
         try {
-            const response = await fetch("data_access/add_rules_insert.php", {
+            const response = await fetch("data_access/add_docs_insert.php", {
                 method: "POST",
                 body: new FormData(form),
             });
