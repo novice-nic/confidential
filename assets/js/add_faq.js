@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
             tr.appendChild(cell(r.type));
             tr.appendChild(cell(r.name));
             tr.appendChild(cell(r.date_fmt));
-            tr.appendChild(cell(r.remarks));
+            // tr.appendChild(cell(r.remarks));
             tbody.appendChild(tr);
         });
         checkAll.checked = false;

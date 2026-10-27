@@ -31,7 +31,7 @@ try {
             'type'     => $r['doc_type_name'] ?? '',
             'name'     => $r['doc_name'] ?? '',
             'date_fmt' => !empty($r['doc_date']) ? date('d-m-Y', strtotime($r['doc_date'])) : '',
-            'remarks'  => $r['remarks'] ?? '',
+            // 'remarks'  => $r['remarks'] ?? '',
         ];
     }
 

@@ -88,7 +88,7 @@ include_once 'data_access/fetch_files.php';
                                                         <th>Document Type</th>
                                                         <th>Document Name</th>
                                                         <th>Document Date</th>
-                                                        <th>Remarks</th>
+                                                        <!-- <th>Remarks</th> -->
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>

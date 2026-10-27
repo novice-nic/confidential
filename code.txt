@@ -51,3 +51,79 @@ CREATE TABLE file_document (
 
 table name - file_document 
 
+------------------------------------------------------------
+                  27th October Add FAQ
+------------------------------------------------------------
+
+CREATE TABLE faq (
+    id serial NOT NULL,
+    file_id integer NOT NULL,
+    question varchar(1000) NOT NULL,
+    answer varchar(1000) NOT NULL,
+    total_docs integer NOT NULL, 
+    is_deleted boolean NOT NULL default FALSE,
+    created_at timestamp without time zone NOT NULL,
+    modified_at timestamp without time zone NULL,
+    deleted_at timestamp without time zone NULL,
+    CONSTRAINT PK_faq PRIMARY KEY (id)
+);
+
+CREATE TABLE faq_document (
+    id serial NOT NULL,
+    faq_id integer NOT NULL,
+    document_id integer NOT NULL,    
+    CONSTRAINT PK_faq_document PRIMARY KEY (id),
+    CONSTRAINT fk_faq_document_faq_id FOREIGN KEY (faq_id) REFERENCES faq(id)
+);
+
+
+<input type="hidden" id="confirmation_ids" name="confirmation_ids" value="">
+<h5 id="confirmation_count" class="text-muted" style="font-weight: bold;"></h5>
+
+var confirmationArray = $("input:checkbox[name=bulk_confirmation]:checked").map(function() {
+return $(this).data("value");
+}).get();
+
+var countChecked = $("input:checkbox[name=bulk_confirmation]:checked").length;
+$('#confirmation_count').text(countChecked + ' Judicial Officers are selected for confirmation');
+
+$("#confirmation_ids").val(confirmationArray.join(","));
+
+
+try {
+
+$date = date('Y-m-d H:i:s');
+$conn->beginTransaction();
+
+// Step 1: Check if district already exists
+
+$checkStmt = $conn->prepare("");
+
+$checkStmt->execute([$fyear, $judgeid , '{' . implode(',', $districtids) . '}']);
+$alreadyMapped = $checkStmt->fetchAll(PDO::FETCH_COLUMN);
+
+$rows = count($alreadyMapped);
+
+if ($rows > 0) {
+
+echo json_encode([
+'status' => false,
+'message' => 'Judge - District (s) - '.implode(', ', $alreadyMapped). ' already mapped.',
+'flag' => 0
+]);
+$conn->commit();
+exit;
+} else {
+
+$judge_ids = explode(',', $_POST['confirmation_ids']);
+
+foreach ($judge_ids as $judge_id) {
+
+}
+
+$conn->commit();
+} catch (Throwable $e) {
+$conn->rollBack();
+throw $e;
+}
+
