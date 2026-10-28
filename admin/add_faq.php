@@ -113,6 +113,7 @@ include_once 'data_access/fetch_files.php';
                                             <tbody></tbody>
                                         </table>
                                     </div>
+                                    <p class="fw-bold mt-2 mb-0" id="selectedCount"></p>
                                 </div>
 
                                 <div class="d-flex justify-content-center mt-4">

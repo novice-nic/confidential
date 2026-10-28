@@ -6,6 +6,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let requestNo = 0; // ignores slow, outdated answers if the file is changed quickly
 
+    const selectedCount = document.getElementById("selectedCount");
+
+    // Shows how many documents are ticked
+    function updateCount() {
+        const n = tbody.querySelectorAll(".doc-check:checked").length;
+        selectedCount.textContent = n + (n === 1 ? " document is selected" : " documents are selected");
+    }
+
     // Build one cell with safe text
     function cell(text) {
         const td = document.createElement("td");
@@ -14,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function showMessage(text) {
+        selectedCount.textContent = "";
         tbody.innerHTML = "";
         const tr = document.createElement("tr");
         const td = document.createElement("td");
@@ -51,6 +60,8 @@ document.addEventListener("DOMContentLoaded", function () {
         checkAll.checked = false;
         checkAll.indeterminate = false;
         checkAll.disabled = false;
+
+        updateCount();
     }
 
     // When the file changes, load its documents
@@ -92,6 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
         tbody.querySelectorAll(".doc-check").forEach(function (box) {
             box.checked = checkAll.checked;
         });
+        updateCount();
     });
 
     // Keep the select-all box in step with the row boxes
@@ -101,6 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const ticked = tbody.querySelectorAll(".doc-check:checked").length;
         checkAll.checked = ticked === boxes.length;
         checkAll.indeterminate = ticked > 0 && ticked < boxes.length;
+        updateCount();
     });
 
 
@@ -152,6 +165,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 checkAll.checked = false;
                 checkAll.indeterminate = false;
                 section.classList.add("d-none");   // hide the table again
+
+                selectedCount.textContent = "";
             }
         } catch (error) {
             Swal.fire({
