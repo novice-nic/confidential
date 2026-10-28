@@ -102,4 +102,66 @@ document.addEventListener("DOMContentLoaded", function () {
         checkAll.checked = ticked === boxes.length;
         checkAll.indeterminate = ticked > 0 && ticked < boxes.length;
     });
+
+
+    // ---------- Submit the form ----------
+    const form = document.getElementById("addFaqForm");
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        // Browser checks: file, question and answer
+        if (!form.checkValidity()) {
+            form.classList.add("was-validated");
+            return;
+        }
+
+        // At least one document must be ticked
+        if (tbody.querySelectorAll(".doc-check:checked").length === 0) {
+            Swal.fire({
+                theme: "auto",
+                icon: "warning",
+                title: "Select a document",
+                text: "Please select at least one document."
+            });
+            return;
+        }
+
+        submitBtn.disabled = true; // stop double submit
+
+        try {
+            const response = await fetch("data_access/add_faq_insert.php", {
+                method: "POST",
+                body: new FormData(form)
+            });
+            const data = await response.json();
+
+            await Swal.fire({
+                theme: "auto",
+                icon: data.status === "Success" ? "success" : "error",
+                title: data.status,
+                text: data.message
+            });
+
+            if (data.status === "Success") {
+                requestNo++;                       // ignore any slow answer still on its way
+                form.reset();                      // clears file, question and answer
+                form.classList.remove("was-validated");
+                tbody.innerHTML = "";              // empty the document table
+                checkAll.checked = false;
+                checkAll.indeterminate = false;
+                section.classList.add("d-none");   // hide the table again
+            }
+        } catch (error) {
+            Swal.fire({
+                theme: "auto",
+                icon: "error",
+                title: "Request failed",
+                text: "Something went wrong. Please try again."
+            });
+        } finally {
+            submitBtn.disabled = false; // always enable the button again
+        }
+    });
 });

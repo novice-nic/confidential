@@ -74,27 +74,7 @@ include_once 'data_access/fetch_files.php';
                                         </select>
                                         <div class="invalid-feedback">File is required.</div>
                                     </div>
-                                    <!-- Documents based on file select -->
-                                    <div class="col-12 d-none" id="docsSection">
-                                        <label class="form-label">Documents of this file</label>
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-bordered" id="docsTable">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width:50px">
-                                                            <input type="checkbox" class="form-check-input" id="checkAll" title="Select all">
-                                                        </th>
-                                                        <th style="width:70px">S.No.</th>
-                                                        <th>Document Type</th>
-                                                        <th>Document Name</th>
-                                                        <th>Document Date</th>
-                                                        <!-- <th>Remarks</th> -->
-                                                    </tr>
-                                                </thead>
-                                                <tbody></tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+
 
                                     <div class="col-md-12">
                                         <label class="form-label" for="formQuestion">Question</label>
@@ -111,6 +91,30 @@ include_once 'data_access/fetch_files.php';
                                     </div>
 
                                 </div>
+
+
+                                <!-- Documents based on file select -->
+                                <div class="col-12 d-none" id="docsSection">
+                                    <label class="form-label">Documents of this file</label>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered" id="docsTable">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:50px">
+                                                        <input type="checkbox" class="form-check-input" id="checkAll" title="Select all">
+                                                    </th>
+                                                    <th style="width:70px">S.No.</th>
+                                                    <th>Document Type</th>
+                                                    <th>Document Name</th>
+                                                    <th>Document Date</th>
+                                                    <!-- <th>Remarks</th> -->
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
                                 <div class="d-flex justify-content-center mt-4">
                                     <button class="btn btn-primary" type="submit">Submit</button>
                                 </div>
@@ -133,7 +137,7 @@ include_once 'data_access/fetch_files.php';
     <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/allowed_characters.js"></script>
-    <script src="../assets/js/add_faq.js?v=1"></script>
+    <script src="../assets/js/add_faq.js?v=2"></script>
 
 </body>
 
