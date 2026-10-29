@@ -70,7 +70,7 @@ function val(?array $r, string $k): string
                     <div class="page-heading">
                         <div class="page-heading-copy">
                             <span class="page-icon">
-                                <i class="bi bi-plus-circle"></i>
+                                <i class="bi bi-file-earmark-plus"></i>
                             </span>
                             <div>
                                 <!-- <p class="eyebrow mb-1">Inputs</p> -->

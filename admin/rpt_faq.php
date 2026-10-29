@@ -133,23 +133,41 @@ include_once 'data_access/fetch_faqs.php';
             stateSave: true,
             pageLength: 10,
             lengthMenu: [5, 10, 25, 50],
-            columnDefs: [
-                { targets: 0, orderable: false, searchable: false }, // S.No.
-                { targets: -1, orderable: false, searchable: false } // Action
+            columnDefs: [{
+                    targets: 0,
+                    orderable: false,
+                    searchable: false
+                }, // S.No.
+                {
+                    targets: -1,
+                    orderable: false,
+                    searchable: false
+                } // Action
             ],
             // Numbers all rows 1, 2, 3... across all pages
             drawCallback: function() {
-                this.api().column(0, { search: 'applied', order: 'applied' })
+                this.api().column(0, {
+                        search: 'applied',
+                        order: 'applied'
+                    })
                     .nodes().each(function(cell, i) {
                         cell.innerHTML = i + 1;
                     });
             },
             layout: {
                 topStart: {
-                    buttons: [
-                        { extend: 'copyHtml5', exportOptions: exportOpts },
-                        { extend: 'csvHtml5', exportOptions: exportOpts },
-                        { extend: 'excelHtml5', exportOptions: exportOpts },
+                    buttons: [{
+                            extend: 'copyHtml5',
+                            exportOptions: exportOpts
+                        },
+                        {
+                            extend: 'csvHtml5',
+                            exportOptions: exportOpts
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            exportOptions: exportOpts
+                        },
                         {
                             extend: 'pdfHtml5',
                             orientation: 'landscape',
@@ -168,10 +186,18 @@ include_once 'data_access/fetch_faqs.php';
                                 });
 
                                 doc.content[1].layout = {
-                                    hLineWidth: function() { return 0.5; },
-                                    vLineWidth: function() { return 0.5; },
-                                    hLineColor: function() { return '#adb5bd'; },
-                                    vLineColor: function() { return '#adb5bd'; }
+                                    hLineWidth: function() {
+                                        return 0.5;
+                                    },
+                                    vLineWidth: function() {
+                                        return 0.5;
+                                    },
+                                    hLineColor: function() {
+                                        return '#adb5bd';
+                                    },
+                                    vLineColor: function() {
+                                        return '#adb5bd';
+                                    }
                                 };
 
                                 doc.content[1].table.widths = Array(
@@ -189,6 +215,7 @@ include_once 'data_access/fetch_faqs.php';
             }
         });
     </script>
+    <script src="../assets/js/faq_report_delete.js?v=1"></script>
 </body>
 
 </html>
