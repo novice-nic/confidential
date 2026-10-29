@@ -15,8 +15,8 @@
     $current_page = basename($_SERVER['PHP_SELF']);
 
     // Which pages belong to which group
-    $entryPages  = ['file_master.php', 'add_docs.php'];
-    $reportPages = ['rpt_files.php', 'rpt_documents.php'];
+    $entryPages  = ['file_master.php', 'add_docs.php', 'add_faq.php'];
+    $reportPages = ['rpt_files.php', 'rpt_documents.php', 'rpt_faq.php'];
 
     $entryOpen  = in_array($current_page, $entryPages);
     $reportOpen = in_array($current_page, $reportPages);
@@ -47,8 +47,12 @@
                         <span class="nav-text">Add Documents</span>
                     </a>
                 </li>
+                <li>
+                    <a class="nav-link sub-link <?= $current_page == 'add_faq.php' ? 'active' : '' ?>" href="add_faq.php">
+                        <span class="nav-text">Add FAQs</span>
+                    </a>
+                </li>
             </ul>
-
         </div>
 
         <!-- Reports group -->
@@ -70,6 +74,12 @@
                         <span class="nav-text">Document Report</span>
                     </a>
                 </li>
+                <li>
+                    <a class="nav-link sub-link <?= $current_page == 'rpt_faq.php' ? 'active' : '' ?>" href="rpt_faq.php">
+                        <span class="nav-text">FAQ Report</span>
+                    </a>
+                </li>
+
 
             </ul>
         </div>

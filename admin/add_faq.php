@@ -138,7 +138,7 @@ include_once 'data_access/fetch_files.php';
     <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/allowed_characters.js"></script>
-    <script src="../assets/js/add_faq.js?v=2"></script>
+    <script src="../assets/js/add_faq.js?v=3"></script>
 
 </body>
 

@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
         tbody.innerHTML = "";
         const tr = document.createElement("tr");
         const td = document.createElement("td");
-        td.colSpan = 6;
+        td.colSpan = 5;
         td.className = "text-center text-muted";
         td.textContent = text;
         tr.appendChild(td);

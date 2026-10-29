@@ -1680,42 +1680,52 @@ html[data-theme="dark"] {
   transform: rotate(360deg); /* open: points down */
 }
 
+/* DataTable Styling */
+
 #docTable,
 #filesTable,
 #docTable th,
 #filesTable th,
 #docTable td,
-#filesTable td {
+#filesTable td,
+#faqTable td,
+#faqTable th {
   border: 1px solid #adb5bd !important;
 }
 
 #docTable,
-#filesTable {
+#filesTable,
+#faqTable {
   border-collapse: collapse;
 }
 
 #docTable th,
-#filesTable th,
 #docTable td,
-#filesTable td {
+#filesTable th,
+#filesTable td,
+#faqTable td,
+#faqTable th {
   text-align: center !important;
 }
 
 #docTable thead th > .dt-column-header,
-#filesTable thead th > .dt-column-header {
+#filesTable thead th > .dt-column-header,
+#faqTable thead th > .dt-column-header {
   justify-content: flex-start !important;
   flex-direction: row !important;
 }
 
 /* Datatables header backgound color */
 #docTable thead th,
-#filesTable thead th {
+#filesTable thead th,
+#faqTable thead th {
   background-color: #1e293b !important;
   color: #eaf2ff !important;
 }
 
 html[data-theme="dark"] #docTable thead th,
-html[data-theme="dark"] #filesTable thead th {
+html[data-theme="dark"] #filesTable thead th,
+html[data-theme="dark"] #faqTable thead th {
   background-color: #1e3a5f !important;
   color: #e2e8f0 !important;
 }
