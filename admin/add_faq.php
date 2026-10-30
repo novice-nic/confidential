@@ -6,8 +6,43 @@ if (!isset($_SESSION['user_id']) || (int)$_SESSION['role'] !== 1) {
     header('Location: ../login.php');
     exit();
 }
+require_once __DIR__ . '/../include/conn.php';
 include_once 'data_access/fetch_files.php';
 /** @var array $fetchFiles */
+
+// Edit mode: the Edit button in the report sends the FAQ id with POST
+$editId = (int)($_POST['id'] ?? 0);
+$record = null;
+$selectedIds = [];
+
+if ($editId > 0) {
+    $stmt = $conn->prepare(
+        "SELECT id, file_id, question, answer
+         FROM public.faq
+         WHERE id = :id AND is_deleted = FALSE"
+    );
+    $stmt->execute([':id' => $editId]);
+    $record = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Wrong or deleted id: go back to the report
+    if (!$record) {
+        header('Location: rpt_faq.php');
+        exit();
+    }
+
+    // The documents that are already linked to this FAQ
+    $stmt = $conn->prepare("SELECT document_id FROM public.faq_document WHERE faq_id = :id");
+    $stmt->execute([':id' => $editId]);
+    $selectedIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+}
+
+$isEdit = $record !== null;
+
+// Safe text for the form fields
+function val(?array $r, string $k): string
+{
+    return htmlspecialchars((string)($r[$k] ?? ''), ENT_QUOTES, 'UTF-8');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,7 +76,7 @@ include_once 'data_access/fetch_files.php';
                             </span>
                             <div>
                                 <!-- <p class="eyebrow mb-1">Overview</p> -->
-                                <h1 class="h3 mb-1">Add FAQ</h1>
+                                <h1 class="h3 mb-1"><?= $isEdit ? 'Edit FAQ' : 'Add FAQ' ?></h1>
                                 <!-- <p class="text-muted mb-0">Reusable form controls, validation states, and field layouts.</p> -->
                             </div>
                         </div>
@@ -50,7 +85,10 @@ include_once 'data_access/fetch_files.php';
 
                     <section class="row g-3 justify-content-center">
                         <div class="col-12">
-                            <form class="panel needs-validation form-add" id="addFaqForm" method="post" novalidate>
+                            <form class="panel needs-validation form-add" id="addFaqForm" method="post" novalidate
+                                data-edit-file="<?= $isEdit ? (int)$record['file_id'] : 0 ?>"
+                                data-selected="<?= htmlspecialchars(json_encode($selectedIds), ENT_QUOTES, 'UTF-8') ?>">
+                                <input type="hidden" name="id" value="<?= $isEdit ? (int)$record['id'] : 0 ?>">
                                 <div class="panel-header">
                                     <div>
                                         <p class="text-muted mb-0">
@@ -64,10 +102,12 @@ include_once 'data_access/fetch_files.php';
                                     <div class="col-md-12">
                                         <label for="chooseFile" class="form-label">File</label>
                                         <span class="text-danger">*</span>
-                                        <select name="file_id" class="form-select" id="chooseFile" required>
-                                            <option selected disabled value="">--Choose a file--</option>
+
+                                        <select name="file_id" class="form-select" id="chooseFile" <?= $isEdit ? 'disabled' : 'required'  ?>>
+                                            <option <?= $isEdit ? '' : 'selected' ?> disabled value="">--Choose a file--</option>
                                             <?php foreach ($fetchFiles as $files) { ?>
-                                                <option value="<?php echo (int)$files['id']; ?>">
+                                                <option value="<?php echo (int)$files['id']; ?>"
+                                                    <?= $isEdit && (int)$record['file_id'] === (int)$files['id'] ? 'selected' : '' ?>>
                                                     <?php echo htmlspecialchars($files['file_number'] . " - " . $files['subject'], ENT_QUOTES, 'UTF-8'); ?>
                                                 </option>
                                             <?php } ?>
@@ -79,14 +119,15 @@ include_once 'data_access/fetch_files.php';
                                     <div class="col-md-12">
                                         <label class="form-label" for="formQuestion">Question</label>
                                         <span class="text-danger">*</span>
-                                        <input class="form-control allow-alphanumeric" name="question" maxlength="300" id="formQuestion" type="text" required>
+                                        <input class="form-control allow-alphanumeric" name="question" maxlength="300" id="formQuestion" type="text"
+                                            value="<?= val($record, 'question') ?>" required>
                                         <div class="invalid-feedback">Question is required.</div>
                                     </div>
 
                                     <div class="col-12">
                                         <label class="form-label" for="formAnswer">Answer</label>
                                         <span class="text-danger">*</span>
-                                        <textarea class="form-control allow-alphanumeric" name="answer" maxlength="1000" id="formAnswer" rows="4" required></textarea>
+                                        <textarea class="form-control allow-alphanumeric" name="answer" maxlength="1000" id="formAnswer" rows="4" required><?= val($record, 'answer') ?></textarea>
                                         <div class="invalid-feedback">Answer is required.</div>
                                     </div>
 
@@ -117,7 +158,7 @@ include_once 'data_access/fetch_files.php';
                                 </div>
 
                                 <div class="d-flex justify-content-center mt-4">
-                                    <button class="btn btn-primary" type="submit">Submit</button>
+                                    <button class="btn btn-primary" type="submit"><?= $isEdit ? 'Update' : 'Submit' ?></button>
                                 </div>
                             </form>
                         </div>
@@ -138,7 +179,7 @@ include_once 'data_access/fetch_files.php';
     <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/allowed_characters.js"></script>
-    <script src="../assets/js/add_faq.js?v=3"></script>
+    <script src="../assets/js/add_faq.js?v=4"></script>
 
 </body>
 

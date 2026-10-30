@@ -1,12 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const fileSelect = document.getElementById("chooseFile");
-    const section = document.getElementById("docsSection");
-    const tbody = document.querySelector("#docsTable tbody");
-    const checkAll = document.getElementById("checkAll");
+    const form          = document.getElementById("addFaqForm");
+    const fileSelect    = document.getElementById("chooseFile");
+    const section       = document.getElementById("docsSection");
+    const tbody         = document.querySelector("#docsTable tbody");
+    const checkAll      = document.getElementById("checkAll");
+    const selectedCount = document.getElementById("selectedCount");
+    const submitBtn     = form.querySelector('button[type="submit"]');
 
     let requestNo = 0; // ignores slow, outdated answers if the file is changed quickly
 
-    const selectedCount = document.getElementById("selectedCount");
+    // Build one cell with safe text
+    function cell(text) {
+        const td = document.createElement("td");
+        td.textContent = text;
+        return td;
+    }
 
     // Shows how many documents are ticked
     function updateCount() {
@@ -14,11 +22,13 @@ document.addEventListener("DOMContentLoaded", function () {
         selectedCount.textContent = n + (n === 1 ? " document is selected" : " documents are selected");
     }
 
-    // Build one cell with safe text
-    function cell(text) {
-        const td = document.createElement("td");
-        td.textContent = text;
-        return td;
+    // Keeps the select-all box in step with the row boxes
+    function syncCheckAll() {
+        const boxes  = tbody.querySelectorAll(".doc-check");
+        const ticked = tbody.querySelectorAll(".doc-check:checked").length;
+        checkAll.checked = boxes.length > 0 && ticked === boxes.length;
+        checkAll.indeterminate = ticked > 0 && ticked < boxes.length;
+        updateCount();
     }
 
     function showMessage(text) {
@@ -36,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         checkAll.disabled = true;
     }
 
-    function renderRows(rows) {
+    function renderRows(rows, selectedIds) {
         tbody.innerHTML = "";
         rows.forEach(function (r, i) {
             const tr = document.createElement("tr");
@@ -47,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
             box.className = "form-check-input doc-check";
             box.name = "document_ids[]";
             box.value = r.id;
+            box.checked = selectedIds.includes(r.id); // pre-tick the saved ones
             tdCheck.appendChild(box);
 
             tr.appendChild(tdCheck);
@@ -54,24 +65,14 @@ document.addEventListener("DOMContentLoaded", function () {
             tr.appendChild(cell(r.type));
             tr.appendChild(cell(r.name));
             tr.appendChild(cell(r.date_fmt));
-            // tr.appendChild(cell(r.remarks));
             tbody.appendChild(tr);
         });
-        checkAll.checked = false;
-        checkAll.indeterminate = false;
         checkAll.disabled = false;
-
-        updateCount();
+        syncCheckAll();
     }
 
-    // When the file changes, load its documents
-    fileSelect.addEventListener("change", async function () {
-        const fileId = fileSelect.value;
-        if (!fileId) {
-            section.classList.add("d-none");
-            return;
-        }
-
+    // Load the documents of a file (selectedIds = the ones to tick)
+    async function loadDocuments(fileId, selectedIds) {
         const thisRequest = ++requestNo;
         section.classList.remove("d-none");
         showMessage("Loading...");
@@ -91,36 +92,50 @@ document.addEventListener("DOMContentLoaded", function () {
                 showMessage("No documents found for this file.");
                 return;
             }
-            renderRows(data.data);
+            renderRows(data.data, selectedIds);
         } catch (error) {
             if (thisRequest !== requestNo) return;
             showMessage("Something went wrong. Please try again.");
         }
+    }
+
+    // When the file changes, load its documents
+    fileSelect.addEventListener("change", function () {
+        if (!fileSelect.value) {
+            section.classList.add("d-none");
+            return;
+        }
+        loadDocuments(fileSelect.value, []);
     });
+
+    // Edit mode: load the saved file's documents and tick the linked ones
+    const editFile = parseInt(form.dataset.editFile, 10) || 0;
+    if (editFile > 0) {
+        let saved = [];
+        try {
+            saved = JSON.parse(form.dataset.selected || "[]");
+        } catch (e) {
+            saved = [];
+        }
+        loadDocuments(editFile, saved.map(Number));
+    }
 
     // Select-all checkbox
     checkAll.addEventListener("change", function () {
         tbody.querySelectorAll(".doc-check").forEach(function (box) {
             box.checked = checkAll.checked;
         });
-        updateCount();
+        syncCheckAll();
     });
 
-    // Keep the select-all box in step with the row boxes
+    // A single row box was clicked
     tbody.addEventListener("change", function (e) {
-        if (!e.target.classList.contains("doc-check")) return;
-        const boxes = tbody.querySelectorAll(".doc-check");
-        const ticked = tbody.querySelectorAll(".doc-check:checked").length;
-        checkAll.checked = ticked === boxes.length;
-        checkAll.indeterminate = ticked > 0 && ticked < boxes.length;
-        updateCount();
+        if (e.target.classList.contains("doc-check")) {
+            syncCheckAll();
+        }
     });
-
 
     // ---------- Submit the form ----------
-    const form = document.getElementById("addFaqForm");
-    const submitBtn = form.querySelector('button[type="submit"]');
-
     form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
@@ -158,15 +173,20 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             if (data.status === "Success") {
-                requestNo++;                       // ignore any slow answer still on its way
-                form.reset();                      // clears file, question and answer
-                form.classList.remove("was-validated");
-                tbody.innerHTML = "";              // empty the document table
-                checkAll.checked = false;
-                checkAll.indeterminate = false;
-                section.classList.add("d-none");   // hide the table again
-
-                selectedCount.textContent = "";
+                if (data.mode === "update") {
+                    // Edit mode: go back to the report
+                    window.location.href = "rpt_faq.php";
+                } else {
+                    // New FAQ: clear the form
+                    requestNo++;
+                    form.reset();
+                    form.classList.remove("was-validated");
+                    tbody.innerHTML = "";
+                    checkAll.checked = false;
+                    checkAll.indeterminate = false;
+                    selectedCount.textContent = "";
+                    section.classList.add("d-none");
+                }
             }
         } catch (error) {
             Swal.fire({
