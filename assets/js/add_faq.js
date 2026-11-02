@@ -146,15 +146,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // At least one document must be ticked
-        if (tbody.querySelectorAll(".doc-check:checked").length === 0) {
-            Swal.fire({
-                theme: "auto",
-                icon: "warning",
-                title: "Select a document",
-                text: "Please select at least one document."
-            });
-            return;
-        }
+        // if (tbody.querySelectorAll(".doc-check:checked").length === 0) {
+        //     Swal.fire({
+        //         theme: "auto",
+        //         icon: "warning",
+        //         title: "Select a document",
+        //         text: "Please select at least one document."
+        //     });
+        //     return;
+        // }
 
         submitBtn.disabled = true; // stop double submit
 

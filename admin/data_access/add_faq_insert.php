@@ -36,7 +36,9 @@ try {
     }
     $docIds = array_values(array_unique(array_filter(
         array_map('intval', $rawIds),
-        function ($v) { return $v > 0; }
+        function ($v) {
+            return $v > 0;
+        }
     )));
 
     // Edit: the file cannot be changed, so read it from the saved FAQ
@@ -56,7 +58,7 @@ try {
     if ($fileId <= 0)         throw new Exception("Please choose a file.");
     if ($question === '')     throw new Exception("Question is required.");
     if ($answer === '')       throw new Exception("Answer is required.");
-    if (count($docIds) === 0) throw new Exception("Please select at least one document.");
+    // if (count($docIds) === 0) throw new Exception("Please select at least one document.");
 
     // Length checks
     checkMaxLength($question, 300, "Question");
@@ -72,14 +74,16 @@ try {
     }
 
     // Every ticked document must exist, not be deleted, and belong to this file
-    $marks = implode(',', array_fill(0, count($docIds), '?'));
-    $stmt = $conn->prepare(
-        "SELECT COUNT(*) FROM public.file_document
+    if (count($docIds) > 0) {
+        $marks = implode(',', array_fill(0, count($docIds), '?'));
+        $stmt = $conn->prepare(
+            "SELECT COUNT(*) FROM public.file_document
          WHERE file_id = ? AND is_deleted = FALSE AND id IN ($marks)"
-    );
-    $stmt->execute(array_merge([$fileId], $docIds));
-    if ((int)$stmt->fetchColumn() !== count($docIds)) {
-        throw new Exception("One or more selected documents are not valid for this file.");
+        );
+        $stmt->execute(array_merge([$fileId], $docIds));
+        if ((int)$stmt->fetchColumn() !== count($docIds)) {
+            throw new Exception("One or more selected documents are not valid for this file.");
+        }
     }
 
     // 4. Save the FAQ and its links together

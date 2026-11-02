@@ -179,7 +179,7 @@ function val(?array $r, string $k): string
     <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/allowed_characters.js"></script>
-    <script src="../assets/js/add_faq.js?v=4"></script>
+    <script src="../assets/js/add_faq.js?v=5"></script>
 
 </body>
 
