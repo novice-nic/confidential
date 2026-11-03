@@ -119,7 +119,7 @@ function val(?array $r, string $k): string
                                     <div class="col-md-12">
                                         <label class="form-label" for="formQuestion">Question</label>
                                         <span class="text-danger">*</span>
-                                        <input class="form-control allow-alphanumeric" name="question" maxlength="300" id="formQuestion" type="text"
+                                        <input class="form-control allow-question" name="question" maxlength="300" id="formQuestion" type="text"
                                             value="<?= val($record, 'question') ?>" required>
                                         <div class="invalid-feedback">Question is required.</div>
                                     </div>
@@ -178,7 +178,7 @@ function val(?array $r, string $k): string
     <script src="../assets/js/sweetalert2.js"></script>
     <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/allowed_characters.js"></script>
+    <script src="../assets/js/allowed_characters.js?v=2"></script>
     <script src="../assets/js/add_faq.js?v=5"></script>
 
 </body>
