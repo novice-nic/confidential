@@ -9,6 +9,15 @@ $fRemarks = trim($_GET['remarks'] ?? '');
 $fFrom    = trim($_GET['from_date'] ?? '');
 $fTo      = trim($_GET['to_date'] ?? '');
 
+
+// Coming from the File Report: rpt_documents.php?id=<base64 of the file id>
+if ($fFile <= 0 && isset($_GET['id']) && is_string($_GET['id'])) {
+    $decoded = base64_decode($_GET['id'], true);
+    if ($decoded !== false && ctype_digit($decoded)) {
+        $fFile = (int)$decoded;
+    }
+}
+
 // Ignore dates that are not valid Y-m-d
 function validDate(string $d): string
 {
@@ -30,6 +39,7 @@ if ($fFile > 0) {
     $where[] = "fd.file_id = :file";
     $params[':file'] = $fFile;
 }
+// error_log('fFile = ' . $fFile);
 if ($fName !== '') {
     $where[] = "fd.doc_name ILIKE :name";
     $params[':name'] = '%' . $fName . '%';
@@ -47,6 +57,7 @@ if ($fTo !== '') {
     $params[':to'] = $fTo;
 }
 
+
 $sql = "
     SELECT
         fd.id, fd.file_id, fm.file_number, fm.subject AS file_subject,
@@ -62,6 +73,7 @@ $sql = "
 $stmt = $conn->prepare($sql);
 $stmt->execute($params);
 $fetchDocuments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// error_log('SQL = ' . $sql . ' | params = ' . json_encode($params) . ' | rows = ' . count($fetchDocuments));
 
 // Dropdown lists (always show ALL options)
 $docTypes = $conn->query("SELECT id, name FROM public.doc_type ORDER BY id ASC")

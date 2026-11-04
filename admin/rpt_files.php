@@ -71,7 +71,11 @@ include_once 'data_access/fetch_files.php';
                                                 <tr>
                                                     <td><?php echo $i + 1; ?></td>
                                                     <td><?php echo htmlspecialchars($row['file_code']); ?></td>
-                                                    <td><?php echo htmlspecialchars($row['file_number']); ?></td>
+                                                    <td>
+                                                        <a href="rpt_documents.php?id=<?php echo base64_encode($row['id']) ?>">
+                                                            <?php echo htmlspecialchars($row['file_number']); ?>
+                                                        </a>
+                                                    </td>
                                                     <td><?php echo htmlspecialchars($row['subject']); ?></td>
                                                     <td><?php echo htmlspecialchars($row['remarks']); ?></td>
                                                     <td>

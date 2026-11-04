@@ -43,5 +43,6 @@ document.getElementById('btnReset').addEventListener('click', function () {
     form.querySelectorAll('select').forEach(function (s) {
         s.selectedIndex = 0;
     });
+    history.replaceState(null, '', 'rpt_documents.php');
     loadRows();
 });
