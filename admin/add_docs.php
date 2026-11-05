@@ -145,16 +145,16 @@ function val(?array $r, string $k): string
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="file" class="form-label">Pdf Upload</label>
+                                        <label for="file" class="form-label">File Upload</label>
                                         <?php if (!$isEdit) { ?><span class="text-danger">*</span><?php } ?>
-                                        <input name="doc_pdf" type="file" id="file" class="form-control" accept=".pdf,application/pdf"
+                                        <input name="doc_pdf" type="file" id="file" class="form-control" accept=".pdf,.docx,.odt"
                                             <?= $isEdit ? '' : 'required' ?>>
-                                        <div class="invalid-feedback">Select a pdf.</div>
+                                        <div class="invalid-feedback">Select a PDF, DOCX or ODT file.</div>
 
                                         <?php if ($isEdit && !empty($record['doc_pdf'])) { ?>
                                             <div class="form-text">
                                                 Current file: <strong><?= htmlspecialchars(basename($record['doc_pdf']), ENT_QUOTES, 'UTF-8') ?></strong>
-                                                <a href="serve_document.php?id=<?= (int)$record['id'] ?>" target="_blank" rel="noopener noreferrer">View PDF</a>
+                                                <a href="serve_document.php?id=<?= (int)$record['id'] ?>" target="_blank" rel="noopener noreferrer">View file</a>
                                                 <br>Leave empty to keep the current file.
                                             </div>
                                         <?php } ?>

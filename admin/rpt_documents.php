@@ -211,7 +211,7 @@ include_once 'data_access/fetch_documents.php';
                                                                 rel="noopener noreferrer"
                                                                 class="btn btn-sm btn-primary">
                                                                 <i class="bi bi-file-earmark-pdf"></i>
-                                                                View PDF
+                                                                View file
                                                             </a>
                                                         <?php } else { ?>
                                                             <span class="text-muted">No document available</span>

@@ -48,6 +48,7 @@ try {
     $remarks   = trim($_POST['remarks'] ?? '');
     $pdf       = $_FILES['doc_pdf'] ?? null;
     $hasNewPdf = $pdf && $pdf['error'] !== UPLOAD_ERR_NO_FILE;
+    $ext       = '';   // the extension of the new file (pdf, docx or odt)
 
     // Required checks (the file is not sent in edit mode: it cannot be changed)
     if (!$isEdit && $fileId <= 0) throw new Exception("Please choose a file.");
@@ -92,23 +93,50 @@ try {
         if ($oldDbPath === false) throw new Exception("Document not found.");
     }
 
-    // PDF checks: required for a new document, optional when updating
+    // File checks: required for a new document, optional when updating
     if (!$isEdit && !$hasNewPdf) {
-        throw new Exception("Please upload a PDF file.");
+        throw new Exception("Please upload a file.");
     }
     if ($hasNewPdf) {
         if ($pdf['error'] !== UPLOAD_ERR_OK) {
-            throw new Exception("Please upload a PDF file.");
+            throw new Exception("Please upload a file.");
         }
         if ($pdf['size'] > 5 * 1024 * 1024) {
-            throw new Exception("PDF must not be larger than 5 MB.");
+            throw new Exception("File must not be larger than 5 MB.");
         }
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        if ($finfo->file($pdf['tmp_name']) !== 'application/pdf') {
-            throw new Exception("Only PDF files are allowed.");
+
+        // Allowed types: extension => real types the content may report
+        $allowedTypes = [
+            'pdf'  => ['application/pdf'],
+            'docx' => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'],
+            'odt'  => ['application/vnd.oasis.opendocument.text', 'application/zip'],
+        ];
+
+        $ext = strtolower(pathinfo($pdf['name'], PATHINFO_EXTENSION));
+        if (!isset($allowedTypes[$ext])) {
+            throw new Exception("Only PDF, DOCX or ODT files are allowed.");
         }
-        if (strtolower(pathinfo($pdf['name'], PATHINFO_EXTENSION)) !== 'pdf') {
-            throw new Exception("File must have a .pdf extension.");
+
+        // Real type, read from the file content
+        $mime = (new finfo(FILEINFO_MIME_TYPE))->file($pdf['tmp_name']);
+        if (!in_array($mime, $allowedTypes[$ext], true)) {
+            throw new Exception("The file content does not match its extension.");
+        }
+
+        // DOCX and ODT are zip files: look inside to be sure
+        if ($ext === 'docx' || $ext === 'odt') {
+            $zip = new ZipArchive();
+            $ok = $zip->open($pdf['tmp_name']) === true;
+            if ($ok && $ext === 'docx') {
+                $ok = $zip->locateName('word/document.xml') !== false;
+            }
+            if ($ok && $ext === 'odt') {
+                $ok = trim((string)$zip->getFromName('mimetype')) === 'application/vnd.oasis.opendocument.text';
+            }
+            $zip->close();
+            if (!$ok) {
+                throw new Exception("The file is not a valid " . strtoupper($ext) . " document.");
+            }
         }
     }
 
@@ -138,12 +166,12 @@ try {
         ]);
         $newId = $stmt->fetchColumn();
 
-        $newName   = strtolower($safeType) . '_' . str_pad($newId, 5, '0', STR_PAD_LEFT) . '.pdf';
+        $newName   = strtolower($safeType) . '_' . str_pad($newId, 5, '0', STR_PAD_LEFT) . '.' . $ext;
         $dbPath    = 'uploads/documents/' . $newName;
         $savedPath = $uploadDir . $newName;
 
         if (!move_uploaded_file($pdf['tmp_name'], $savedPath)) {
-            throw new Exception("Could not save the PDF file.");
+            throw new Exception("Could not save the file.");
         }
 
         $stmt = $conn->prepare("UPDATE file_document SET doc_pdf = :pdf WHERE id = :id");
@@ -169,14 +197,14 @@ try {
         ]);
 
         if ($hasNewPdf) {
-            $newName   = strtolower($safeType) . '_' . str_pad($id, 5, '0', STR_PAD_LEFT) . '.pdf';
+            $newName   = strtolower($safeType) . '_' . str_pad($id, 5, '0', STR_PAD_LEFT) . '.' . $ext;
             $dbPath    = 'uploads/documents/' . $newName;
             $finalPath = $uploadDir . $newName;
-            $tempPath  = $uploadDir . 'tmp_' . uniqid() . '.pdf';
+            $tempPath  = $uploadDir . 'tmp_' . uniqid() . '.' . $ext;
 
             // 1. Save the new PDF under a temporary name
             if (!move_uploaded_file($pdf['tmp_name'], $tempPath)) {
-                throw new Exception("Could not save the PDF file.");
+                throw new Exception("Could not save the file.");
             }
 
             // 2. Mark the old PDF: DEL_rules_00001_20261016_153012.pdf
@@ -184,9 +212,9 @@ try {
                 $oldPath = $uploadDir . basename($oldDbPath);
                 if (is_file($oldPath)) {
                     $delPath = $uploadDir . 'DEL_' . pathinfo($oldPath, PATHINFO_FILENAME)
-                        . '_' . date('Ymd_His') . '.pdf';
+                        . '_' . date('Ymd_His') . '.' . pathinfo($oldPath, PATHINFO_EXTENSION);
                     if (!rename($oldPath, $delPath)) {
-                        throw new Exception("Could not replace the old PDF file.");
+                        throw new Exception("Could not replace the old file.");
                     }
                     $oldRenamed = true;
                 }
@@ -194,7 +222,7 @@ try {
 
             // 3. Give the new PDF its final name
             if (!rename($tempPath, $finalPath)) {
-                throw new Exception("Could not save the PDF file.");
+                throw new Exception("Could not save the file.");
             }
             $finalMoved = true;
             $tempPath = null;
@@ -218,4 +246,10 @@ try {
     $cleanup();
     http_response_code(400);
     echo json_encode(["status" => "Error", "message" => $e->getMessage()]);
+} catch (Throwable $e) {
+    error_log($e->getMessage());
+    if (isset($conn) && $conn->inTransaction()) $conn->rollBack();
+    $cleanup();
+    http_response_code(500);
+    echo json_encode(["status" => "Error", "message" => "Server error. Please try again."]);
 }

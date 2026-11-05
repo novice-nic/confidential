@@ -29,7 +29,19 @@ if ($full === false || strpos($full, $base . DIRECTORY_SEPARATOR) !== 0 || !is_f
     exit('File not found');
 }
 
-header('Content-Type: application/pdf');
-header('Content-Disposition: inline; filename="' . basename($full) . '"');
+$ext = strtolower(pathinfo($full, PATHINFO_EXTENSION));
+$types = [
+    'pdf'  => ['application/pdf', 'inline'],
+    'docx' => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'attachment'],
+    'odt'  => ['application/vnd.oasis.opendocument.text', 'attachment'],
+];
+if (!isset($types[$ext])) {
+    http_response_code(404);
+    exit('File not found');
+}
+
+header('Content-Type: ' . $types[$ext][0]);
+header('Content-Disposition: ' . $types[$ext][1] . '; filename="' . basename($full) . '"');
+header('X-Content-Type-Options: nosniff');
 header('Content-Length: ' . filesize($full));
 readfile($full);
