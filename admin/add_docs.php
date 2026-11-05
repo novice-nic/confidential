@@ -84,8 +84,8 @@ function val(?array $r, string $k): string
                         <div class="col-12">
                             <form class="panel needs-validation form-add" id="addRulesForm" method="post" enctype="multipart/form-data" novalidate>
                                 <input type="hidden" name="id" value="<?= $isEdit ? (int)$record['id'] : 0 ?>">
-                                <div class="panel-header">
-                                    <div>
+                                <div class="panel-header d-flex">
+                                    <div class="">
                                         <!-- <h2 class="h5 mb-1 section-title">
                                             <i class="bi bi-plus" aria-hidden="true"></i>
                                             <span>Validation Form</span>
@@ -93,6 +93,18 @@ function val(?array $r, string $k): string
                                         <p class="text-muted mb-0">
                                             <span class="text-danger">*</span>
                                             Required fields
+                                        </p>
+
+                                    </div>
+                                    <div class="">
+
+                                        <p class="text-muted mb-0">
+                                            <span class="text-primary">●</span>
+                                            5 MB max file size upload
+                                        </p>
+                                        <p class="text-muted mb-0">
+                                            <span class="text-primary">●</span>
+                                            Only PDF, DOCX, & ODT file extensions are allowed
                                         </p>
                                     </div>
                                 </div>
